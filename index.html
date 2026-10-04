@@ -128,6 +128,14 @@
     .copy{margin:0;color:#d1c6b5;font-size:13px;line-height:1.8}
     .culture{margin-top:14px;padding-top:14px;border-top:1px solid rgba(212,175,85,.14)}
     .culture b{display:block;margin-bottom:5px;color:var(--gold);font-size:12px}
+    .overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px}
+    .overview-card{padding:15px 16px;border:1px solid var(--border);border-radius:15px;background:rgba(22,19,14,.72)}
+    .overview-card b{display:block;margin-bottom:6px;color:var(--gold-soft);font-size:12px}
+    .overview-card p{margin:0;color:#b9ae9f;font-size:12px;line-height:1.75}
+    .stage-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:0 0 26px}
+    .stage-chip{padding:10px 8px;border:1px solid rgba(212,175,85,.15);border-radius:12px;background:rgba(16,15,12,.7);text-align:center}
+    .stage-chip strong{display:block;color:#e4d4b0;font-size:11px}
+    .stage-chip small{display:block;margin-top:3px;color:#8f877b;font-size:9px}
     .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .time-card{
       text-align:left;padding:15px;border:1px solid var(--border);border-radius:16px;
@@ -156,6 +164,8 @@
       .live-panel{grid-template-columns:1fr 1fr}
       .live-cell:first-child{grid-column:1/-1}
       .live-cell+.live-cell{border-left:0}
+      .overview-grid{grid-template-columns:1fr}
+      .stage-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
       .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media(max-width:560px){
@@ -210,6 +220,16 @@
     <h2 class="section-title" id="traditionalTitle">传统十二时辰</h2>
     <p class="intro">古代把一昼夜分为十二时辰，每个时辰约等于今天的两个小时。这里以现代常用的两小时范围作对应。子时从 23:00 开始并跨越午夜；本页只介绍时辰本身，不涉及八字时柱等需要组合推算的内容。</p>
 
+    <div class="overview-grid" id="overviewGrid"></div>
+    <div class="stage-strip" aria-label="一天的传统时间阶段">
+      <div class="stage-chip"><strong>深夜</strong><small>子 · 丑</small></div>
+      <div class="stage-chip"><strong>黎明</strong><small>寅 · 卯</small></div>
+      <div class="stage-chip"><strong>上午</strong><small>辰 · 巳</small></div>
+      <div class="stage-chip"><strong>中午 / 午后</strong><small>午 · 未</small></div>
+      <div class="stage-chip"><strong>下午 / 傍晚</strong><small>申 · 酉</small></div>
+      <div class="stage-chip"><strong>入夜</strong><small>戌 · 亥</small></div>
+    </div>
+
     <div class="visual">
       <div class="clock-wrap">
         <div class="clock" id="clock" aria-label="十二时辰图">
@@ -237,8 +257,13 @@
 (async()=>{
   const $=id=>document.getElementById(id);
   try{
-    const engine=await loadShichenEngine();
+    const engine=await loadShichenEngine('./data/shichen.json?v=20261004-1');
     const items=engine.list();
+    const meta=engine.getMeta();
+    $("overviewGrid").innerHTML=
+      '<div class="overview-card"><b>十二时辰怎样计时</b><p>'+meta.overview.system+'</p></div>'+
+      '<div class="overview-card"><b>古人怎样辨认时间</b><p>'+meta.overview.basis+'</p></div>'+
+      '<div class="overview-card"><b>本页范围</b><p>'+meta.overview.note+'</p></div>';
     let selected=engine.getCurrent(new Date()) || items[0];
 
     function renderDiagram(){
@@ -267,7 +292,11 @@
           '<div class="fact"><span>方位</span><strong>'+item.direction+'</strong></div>'+
           '<div class="fact"><span>现代时间</span><strong>'+item.range+'</strong></div>'+
         '</div>'+
-        '<p class="copy">'+item.meaning+'</p>'+
+        '<div class="culture"><b>这个时辰是什么</b><p class="copy">'+item.meaning+'</p></div>'+
+        '<div class="culture"><b>名称由来</b><p class="copy">'+item.nameOrigin+'</p></div>'+
+        '<div class="culture"><b>自然景象</b><p class="copy">'+item.naturalScene+'</p></div>'+
+        '<div class="culture"><b>古人作息</b><p class="copy">'+item.dailyRhythm+'</p></div>'+
+        '<div class="culture"><b>现代理解</b><p class="copy">'+item.modernView+'</p></div>'+
         '<div class="culture"><b>文化小记</b><p class="copy">'+item.culture+'</p></div>';
     }
 
