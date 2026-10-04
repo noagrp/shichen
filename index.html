@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="十二时辰">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <title>十二时辰</title>
+  <style>
+    :root{
+      --bg:#090a0c;
+      --bg2:#11100d;
+      --surface:#15130f;
+      --surface2:#1c1811;
+      --live:#111822;
+      --live-border:#30445b;
+      --gold:#d4af55;
+      --gold-soft:#f1d998;
+      --text:#eee7da;
+      --muted:#9b9487;
+      --border:rgba(212,175,85,.22);
+      --shadow:0 18px 48px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--bg)}
+    body{
+      margin:0;min-height:100vh;min-height:100dvh;color:var(--text);
+      font-family:"Noto Serif SC","Songti SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+      background:
+        radial-gradient(circle at 8% 0%,rgba(212,175,85,.10),transparent 30rem),
+        radial-gradient(circle at 92% 18%,rgba(80,107,133,.10),transparent 26rem),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+    }
+    .page{
+      width:min(1220px,100%);
+      margin:0 auto;
+      padding:max(28px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right))
+              max(30px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
+    }
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+      margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border);
+    }
+    .brand{display:flex;align-items:center;gap:14px}
+    .mark{
+      width:56px;height:56px;display:grid;place-items:center;border-radius:17px;
+      border:1px solid rgba(212,175,85,.55);background:rgba(130,96,34,.15);
+      color:var(--gold-soft);font-size:29px;font-weight:800;
+    }
+    h1{margin:0;color:var(--gold-soft);font-size:clamp(28px,4vw,42px);letter-spacing:.02em}
+    .sub{margin:5px 0 0;color:var(--muted);font-size:12px}
+    .back{color:var(--muted);text-decoration:none;font-size:12px;white-space:nowrap}
+    .back:hover{color:var(--gold-soft)}
+    .section-title{margin:0 0 12px;font-size:18px;color:var(--gold-soft)}
+    .live-panel{
+      display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:12px;
+      margin-bottom:34px;padding:18px;border:1px solid var(--live-border);
+      border-radius:20px;background:linear-gradient(180deg,#121b26,#0e141c);
+      box-shadow:var(--shadow);
+    }
+    .live-cell{min-width:0;padding:8px 10px}
+    .live-cell+.live-cell{border-left:1px solid rgba(126,155,183,.18)}
+    .live-label{display:block;margin-bottom:6px;color:#8195a8;font-size:11px;letter-spacing:.12em}
+    .live-time{font:700 clamp(29px,5vw,47px)/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#eff5fb}
+    .live-main{font-size:24px;font-weight:800;color:#dbe8f3}
+    .live-sub{margin-top:5px;color:#8ea1b4;font-size:12px;line-height:1.5}
+    .traditional{padding-top:2px}
+    .intro{
+      max-width:760px;margin:0 0 22px;color:#b8ad9d;font-size:13px;line-height:1.8;
+    }
+    .visual{
+      display:grid;grid-template-columns:minmax(360px,.9fr) minmax(0,1.1fr);
+      gap:24px;align-items:center;margin-bottom:26px;
+    }
+    .clock-wrap{display:grid;place-items:center;min-height:470px}
+    .clock{
+      position:relative;width:min(440px,88vw);aspect-ratio:1;border-radius:50%;
+      border:1px solid rgba(212,175,85,.38);
+      background:
+        radial-gradient(circle at center,rgba(22,20,16,.96) 0 34%,transparent 34.5%),
+        conic-gradient(from -15deg,rgba(212,175,85,.06),rgba(212,175,85,.012) 30deg,rgba(212,175,85,.06) 30deg,rgba(212,175,85,.012) 60deg,rgba(212,175,85,.06) 60deg,rgba(212,175,85,.012) 90deg,rgba(212,175,85,.06) 90deg,rgba(212,175,85,.012) 120deg,rgba(212,175,85,.06) 120deg,rgba(212,175,85,.012) 150deg,rgba(212,175,85,.06) 150deg,rgba(212,175,85,.012) 180deg,rgba(212,175,85,.06) 180deg,rgba(212,175,85,.012) 210deg,rgba(212,175,85,.06) 210deg,rgba(212,175,85,.012) 240deg,rgba(212,175,85,.06) 240deg,rgba(212,175,85,.012) 270deg,rgba(212,175,85,.06) 270deg,rgba(212,175,85,.012) 300deg,rgba(212,175,85,.06) 300deg,rgba(212,175,85,.012) 330deg,rgba(212,175,85,.06) 330deg,rgba(212,175,85,.012));
+      box-shadow:inset 0 0 0 12px rgba(212,175,85,.018),var(--shadow);
+    }
+    .clock::after{
+      content:"";position:absolute;inset:14%;border:1px solid rgba(212,175,85,.14);border-radius:50%;
+    }
+    .clock-node{
+      position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px;
+      border:1px solid rgba(212,175,85,.28);border-radius:50%;background:#15130f;color:var(--text);
+      cursor:pointer;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      font:inherit;box-shadow:0 7px 16px rgba(0,0,0,.28);transition:.18s ease;
+    }
+    .clock-node strong{font-size:17px;color:var(--gold-soft)}
+    .clock-node small{font-size:10px;color:var(--muted);margin-top:2px}
+    .clock-node:hover,.clock-node.selected{transform:translate(var(--x),var(--y)) scale(1.08);border-color:var(--gold);background:#231d11}
+    .clock-node.current{box-shadow:0 0 0 4px rgba(79,119,153,.28),0 7px 16px rgba(0,0,0,.28);border-color:#7894ae}
+    .clock-center{
+      position:absolute;inset:35%;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      border-radius:50%;text-align:center;pointer-events:none;
+    }
+    .clock-center .branch{font-size:clamp(30px,5vw,48px);font-weight:800;color:var(--gold-soft)}
+    .clock-center .range{margin-top:4px;color:var(--muted);font-size:11px}
+    .detail-card{
+      min-height:330px;padding:22px;border:1px solid var(--border);border-radius:20px;
+      background:linear-gradient(180deg,var(--surface2),var(--surface));box-shadow:var(--shadow);
+    }
+    .detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .detail-title{margin:0;color:var(--gold-soft);font-size:28px}
+    .alias{color:var(--muted);font-size:13px;margin-top:5px}
+    .range-badge{padding:7px 10px;border:1px solid var(--border);border-radius:999px;color:var(--gold-soft);font-size:12px;white-space:nowrap}
+    .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}
+    .fact{padding:11px;border:1px solid rgba(212,175,85,.14);border-radius:13px;background:rgba(7,7,7,.22)}
+    .fact span{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}
+    .fact strong{font-size:14px;color:#eee4cf}
+    .copy{margin:0;color:#d1c6b5;font-size:13px;line-height:1.8}
+    .culture{margin-top:14px;padding-top:14px;border-top:1px solid rgba(212,175,85,.14)}
+    .culture b{display:block;margin-bottom:5px;color:var(--gold);font-size:12px}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .time-card{
+      text-align:left;padding:15px;border:1px solid var(--border);border-radius:16px;
+      background:rgba(20,18,14,.76);color:var(--text);cursor:pointer;font:inherit;transition:.18s ease;
+    }
+    .time-card:hover,.time-card.selected{border-color:rgba(212,175,85,.72);transform:translateY(-2px);background:#201b11}
+    .time-card.current{box-shadow:inset 0 0 0 1px #58738b}
+    .time-card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+    .time-card strong{font-size:17px;color:var(--gold-soft)}
+    .time-card small{color:var(--muted);font-size:10px}
+    .time-card p{margin:8px 0 0;color:#a99f91;font-size:11px}
+    footer{
+      display:flex;justify-content:center;align-items:center;gap:8px;margin-top:38px;padding-top:18px;
+      border-top:1px solid var(--border);color:#81796e;font-size:11px;
+    }
+    footer a{color:inherit;text-decoration:none}
+    footer a:hover{color:var(--gold-soft)}
+    .error{padding:20px;border:1px solid #6d3d3d;border-radius:16px;color:#e0b6b6}
+    @media(max-width:900px){
+      .visual{grid-template-columns:1fr}
+      .clock-wrap{min-height:430px}
+      .detail-card{min-height:0}
+      .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media(max-width:700px){
+      .live-panel{grid-template-columns:1fr 1fr}
+      .live-cell:first-child{grid-column:1/-1}
+      .live-cell+.live-cell{border-left:0}
+      .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:560px){
+      .page{padding-left:13px;padding-right:13px}
+      .back{font-size:11px}
+      .mark{width:50px;height:50px;font-size:27px}
+      .brand h1{font-size:28px}
+      .clock-wrap{min-height:auto;padding:8px 0 16px}
+      .clock-node{width:52px;height:52px;margin:-26px}
+      .clock-node strong{font-size:15px}
+      .clock-node small{font-size:9px}
+      .facts{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <div class="brand">
+      <div class="mark" aria-hidden="true">时</div>
+      <div>
+        <h1>十二时辰</h1>
+        <p class="sub">传统时间 · 地支 · 生肖 · 五行 · 阴阳 · 方位</p>
+      </div>
+    </div>
+    <a class="back" href="https://noagrp.github.io/zhong/">返回 中</a>
+  </header>
+
+  <section aria-labelledby="liveTitle">
+    <h2 class="section-title" id="liveTitle">当前</h2>
+    <div class="live-panel">
+      <div class="live-cell">
+        <span class="live-label">当前时间</span>
+        <div class="live-time" id="nowTime">--:--:--</div>
+        <div class="live-sub" id="nowDate">设备本地时间</div>
+      </div>
+      <div class="live-cell">
+        <span class="live-label">当前时辰</span>
+        <div class="live-main" id="currentName">--</div>
+        <div class="live-sub" id="currentInfo">--</div>
+      </div>
+      <div class="live-cell">
+        <span class="live-label">下一时辰</span>
+        <div class="live-main" id="nextName">--</div>
+        <div class="live-sub" id="nextInfo">--</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="traditional" aria-labelledby="traditionalTitle">
+    <h2 class="section-title" id="traditionalTitle">传统十二时辰</h2>
+    <p class="intro">古代把一昼夜分为十二时辰，每个时辰约等于今天的两个小时。这里以现代常用的两小时范围作对应。子时从 23:00 开始并跨越午夜；本页只介绍时辰本身，不涉及八字时柱等需要组合推算的内容。</p>
+
+    <div class="visual">
+      <div class="clock-wrap">
+        <div class="clock" id="clock" aria-label="十二时辰图">
+          <div class="clock-center">
+            <div class="branch" id="centerName">子时</div>
+            <div class="range" id="centerRange">23:00–00:59</div>
+          </div>
+        </div>
+      </div>
+      <article class="detail-card" id="detailCard" aria-live="polite"></article>
+    </div>
+
+    <div class="cards" id="cards" aria-label="十二时辰列表"></div>
+  </section>
+
+  <footer>
+    <a href="https://noagrp.github.io/home/">noagrp home</a>
+    <span>·</span>
+    <a href="https://noagrp.github.io/zhong/">中</a>
+  </footer>
+</main>
+
+<script src="./src/shichen-engine.js"></script>
+<script>
+(async()=>{
+  const $=id=>document.getElementById(id);
+  try{
+    const engine=await loadShichenEngine();
+    const items=engine.list();
+    let selected=engine.getCurrent(new Date()) || items[0];
+
+    function renderDiagram(){
+      const clock=$("clock");
+      clock.querySelectorAll(".clock-node").forEach(n=>n.remove());
+      items.forEach((item,i)=>{
+        const angle=(i*30-90)*Math.PI/180;
+        const radius=42;
+        const x=Math.cos(angle)*radius;
+        const y=Math.sin(angle)*radius;
+        const btn=document.createElement("button");
+        btn.className="clock-node";
+        btn.type="button";
+        btn.dataset.id=item.id;
+        btn.style.setProperty("--x",x+"%");
+        btn.style.setProperty("--y",y+"%");
+        btn.style.transform="translate("+x+"%, "+y+"%)";
+        btn.innerHTML="<strong>"+item.branch+"</strong><small>"+item.traditionalName+"</small>";
+        btn.addEventListener("click",()=>select(item.id,true));
+        clock.appendChild(btn);
+      });
+    }
+
+    function detailHTML(item){
+      return '<div class="detail-head"><div><h3 class="detail-title">'+item.name+'</h3><div class="alias">传统别称 · '+item.traditionalName+'</div></div><div class="range-badge">'+item.range+'</div></div>'+
+        '<div class="facts">'+
+          '<div class="fact"><span>地支</span><strong>'+item.branch+'</strong></div>'+
+          '<div class="fact"><span>生肖</span><strong>'+item.zodiac+'</strong></div>'+
+          '<div class="fact"><span>五行</span><strong>'+item.element+'</strong></div>'+
+          '<div class="fact"><span>阴阳</span><strong>'+item.yinYang+'</strong></div>'+
+          '<div class="fact"><span>方位</span><strong>'+item.direction+'</strong></div>'+
+          '<div class="fact"><span>现代时间</span><strong>'+item.range+'</strong></div>'+
+        '</div>'+
+        '<p class="copy">'+item.meaning+'</p>'+
+        '<div class="culture"><b>文化小记</b><p class="copy">'+item.culture+'</p></div>';
+    }
+
+    function renderCards(){
+      $("cards").innerHTML=items.map(item=>
+        '<button class="time-card" type="button" data-id="'+item.id+'"><div class="top"><strong>'+item.name+'</strong><small>'+item.range+'</small></div><p>'+item.traditionalName+' · '+item.zodiac+' · '+item.element+'</p></button>'
+      ).join("");
+      $("cards").querySelectorAll(".time-card").forEach(btn=>btn.addEventListener("click",()=>select(btn.dataset.id,true)));
+    }
+
+    function select(id,scroll){
+      const item=engine.get(id);
+      if(!item) return;
+      selected=item;
+      $("centerName").textContent=item.name;
+      $("centerRange").textContent=item.range;
+      $("detailCard").innerHTML=detailHTML(item);
+      document.querySelectorAll("[data-id]").forEach(el=>el.classList.toggle("selected",el.dataset.id===item.id));
+      if(scroll && matchMedia("(max-width:900px)").matches) $("detailCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
+
+    function formatDuration(ms){
+      const total=Math.max(0,Math.floor(ms/1000));
+      const h=Math.floor(total/3600);
+      const m=Math.floor((total%3600)/60);
+      const s=total%60;
+      if(h>0) return h+"小时 "+String(m).padStart(2,"0")+"分";
+      return m+"分 "+String(s).padStart(2,"0")+"秒";
+    }
+
+    function updateLive(){
+      const now=new Date();
+      const current=engine.getCurrent(now);
+      const next=engine.getNext(current);
+      $("nowTime").textContent=now.toLocaleTimeString("zh-CN",{hour12:false,hour:"2-digit",minute:"2-digit",second:"2-digit"});
+      $("nowDate").textContent=now.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"short"})+" · 设备本地时间";
+      $("currentName").textContent=current.name+" · "+current.traditionalName;
+      $("currentInfo").textContent=current.range+" · "+current.zodiac+" · "+current.element;
+      $("nextName").textContent=next.name+" · "+next.traditionalName;
+      $("nextInfo").textContent=next.startHour.toString().padStart(2,"0")+":00 开始 · "+formatDuration(engine.timeUntilNext(now))+" 后";
+      document.querySelectorAll("[data-id]").forEach(el=>el.classList.toggle("current",el.dataset.id===current.id));
+    }
+
+    renderDiagram();
+    renderCards();
+    select(selected.id,false);
+    updateLive();
+    setInterval(updateLive,1000);
+
+    if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  }catch(err){
+    document.querySelector(".traditional").innerHTML='<div class="error">资料载入失败，请重新整理页面后再试。</div>';
+  }
+})();
+</script>
+</body>
+</html>
