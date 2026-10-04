@@ -81,6 +81,7 @@
     }
     .clock-wrap{display:grid;place-items:center;min-height:470px}
     .clock{
+      --radius:clamp(118px,34vw,178px);
       position:relative;width:min(440px,88vw);aspect-ratio:1;border-radius:50%;
       border:1px solid rgba(212,175,85,.38);
       background:
@@ -96,10 +97,11 @@
       border:1px solid rgba(212,175,85,.28);border-radius:50%;background:#15130f;color:var(--text);
       cursor:pointer;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;
       font:inherit;box-shadow:0 7px 16px rgba(0,0,0,.28);transition:.18s ease;
+      transform:rotate(var(--angle)) translateY(calc(-1 * var(--radius))) rotate(calc(-1 * var(--angle)));
     }
     .clock-node strong{font-size:17px;color:var(--gold-soft)}
     .clock-node small{font-size:10px;color:var(--muted);margin-top:2px}
-    .clock-node:hover,.clock-node.selected{transform:translate(var(--x),var(--y)) scale(1.08);border-color:var(--gold);background:#231d11}
+    .clock-node:hover,.clock-node.selected{transform:rotate(var(--angle)) translateY(calc(-1 * var(--radius))) rotate(calc(-1 * var(--angle))) scale(1.08);border-color:var(--gold);background:#231d11}
     .clock-node.current{box-shadow:0 0 0 4px rgba(79,119,153,.28),0 7px 16px rgba(0,0,0,.28);border-color:#7894ae}
     .clock-center{
       position:absolute;inset:35%;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -238,17 +240,12 @@
       const clock=$("clock");
       clock.querySelectorAll(".clock-node").forEach(n=>n.remove());
       items.forEach((item,i)=>{
-        const angle=(i*30-90)*Math.PI/180;
-        const radius=42;
-        const x=Math.cos(angle)*radius;
-        const y=Math.sin(angle)*radius;
+        const angle=i*30;
         const btn=document.createElement("button");
         btn.className="clock-node";
         btn.type="button";
         btn.dataset.id=item.id;
-        btn.style.setProperty("--x",x+"%");
-        btn.style.setProperty("--y",y+"%");
-        btn.style.transform="translate("+x+"%, "+y+"%)";
+        btn.style.setProperty("--angle",angle+"deg");
         btn.innerHTML="<strong>"+item.branch+"</strong><small>"+item.traditionalName+"</small>";
         btn.addEventListener("click",()=>select(item.id,true));
         clock.appendChild(btn);
