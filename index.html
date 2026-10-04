@@ -136,17 +136,6 @@
     .stage-chip{padding:10px 8px;border:1px solid rgba(212,175,85,.15);border-radius:12px;background:rgba(16,15,12,.7);text-align:center}
     .stage-chip strong{display:block;color:#e4d4b0;font-size:11px}
     .stage-chip small{display:block;margin-top:3px;color:#8f877b;font-size:9px}
-    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .time-card{
-      text-align:left;padding:15px;border:1px solid var(--border);border-radius:16px;
-      background:rgba(20,18,14,.76);color:var(--text);cursor:pointer;font:inherit;transition:.18s ease;
-    }
-    .time-card:hover,.time-card.selected{border-color:rgba(212,175,85,.72);transform:translateY(-2px);background:#201b11}
-    .time-card.current{box-shadow:inset 0 0 0 1px #58738b}
-    .time-card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-    .time-card strong{font-size:17px;color:var(--gold-soft)}
-    .time-card small{color:var(--muted);font-size:10px}
-    .time-card p{margin:8px 0 0;color:#a99f91;font-size:11px}
     footer{
       display:flex;justify-content:center;align-items:center;gap:8px;margin-top:38px;padding-top:18px;
       border-top:1px solid var(--border);color:#81796e;font-size:11px;
@@ -158,7 +147,6 @@
       .visual{grid-template-columns:1fr}
       .clock-wrap{min-height:460px}
       .detail-card{min-height:0}
-      .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
     @media(max-width:700px){
       .live-panel{grid-template-columns:1fr 1fr}
@@ -166,7 +154,6 @@
       .live-cell+.live-cell{border-left:0}
       .overview-grid{grid-template-columns:1fr}
       .stage-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media(max-width:560px){
       .page{padding-left:13px;padding-right:13px}
@@ -242,7 +229,6 @@
       <article class="detail-card" id="detailCard" aria-live="polite"></article>
     </div>
 
-    <div class="cards" id="cards" aria-label="十二时辰列表"></div>
   </section>
 
   <footer>
@@ -300,12 +286,6 @@
         '<div class="culture"><b>文化小记</b><p class="copy">'+item.culture+'</p></div>';
     }
 
-    function renderCards(){
-      $("cards").innerHTML=items.map(item=>
-        '<button class="time-card" type="button" data-id="'+item.id+'"><div class="top"><strong>'+item.name+'</strong><small>'+item.range+'</small></div><p>'+item.traditionalName+' · '+item.zodiac+' · '+item.element+'</p></button>'
-      ).join("");
-      $("cards").querySelectorAll(".time-card").forEach(btn=>btn.addEventListener("click",()=>select(btn.dataset.id,true)));
-    }
 
     function select(id,scroll){
       const item=engine.get(id);
@@ -315,7 +295,7 @@
       $("centerRange").textContent=item.range;
       $("detailCard").innerHTML=detailHTML(item);
       document.querySelectorAll("[data-id]").forEach(el=>el.classList.toggle("selected",el.dataset.id===item.id));
-      if(scroll && matchMedia("(max-width:900px)").matches) $("detailCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+      if(scroll && matchMedia("(max-width:1080px)").matches) $("detailCard").scrollIntoView({behavior:"smooth",block:"nearest"});
     }
 
     function formatDuration(ms){
@@ -341,7 +321,6 @@
     }
 
     renderDiagram();
-    renderCards();
     select(selected.id,false);
     updateLive();
     setInterval(updateLive,1000);
